@@ -1,0 +1,29 @@
+---
+- name: Manage APT on Debian-based systems
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Ensure APT cache is up-to-date
+      apt:
+        update_cache: yes
+
+    - name: Attempt to fix broken dependencies
+      shell: apt-get -f install -y
+      args:
+        warn: false
+      register: fix_broken
+
+    - name: Log output of fixing broken dependencies
+      debug:
+        msg: "{{ fix_broken.stdout }}"
+
+    - name: Update all packages to the latest version
+      apt:
+        upgrade: dist
+        update_cache: yes
+
+    - name: Perform a full package upgrade (equivalent to apt full-upgrade)
+      apt:
+        upgrade: full
+        update_cache: yes

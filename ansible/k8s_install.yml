@@ -1,0 +1,117 @@
+---
+- name: Kubernetes Cluster Setup
+  hosts: all
+  become: yes
+
+  vars:
+    k8s_version: "1.28.0"
+
+  tasks:
+    - name: Install prerequisite packages
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+        state: present
+        update_cache: yes
+
+    - name: Add Kubernetes APT repository key
+      apt_key:
+        url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+        state: present
+
+    - name: Add Kubernetes APT repository
+      apt_repository:
+        repo: "deb https://apt.kubernetes.io/ kubernetes-xenial main"
+        state: present
+
+    - name: Install Kubernetes components (kubeadm, kubelet, kubectl)
+      apt:
+        name:
+          - kubelet={{ k8s_version }}-00
+          - kubeadm={{ k8s_version }}-00
+          - kubectl={{ k8s_version }}-00
+        state: present
+        update_cache: yes
+
+    - name: Mark Kubernetes packages to hold
+      apt:
+        name:
+          - kubelet
+          - kubeadm
+          - kubectl
+        state: present
+        update_cache: no
+        force_apt_get: yes
+      when: ansible_distribution == "Debian"
+
+- name: Initialize Kubernetes Control Plane
+  hosts: control-plane
+  become: yes
+
+  tasks:
+    - name: Initialize the control plane
+      command: >
+        kubeadm init --pod-network-cidr=10.244.0.0/16
+      register: kubeadm_init
+
+    - name: Create kubeconfig directory for root
+      file:
+        path: /root/.kube
+        state: directory
+        mode: "0700"
+
+    - name: Copy admin.conf to kubeconfig directory
+      copy:
+        src: /etc/kubernetes/admin.conf
+        dest: /root/.kube/config
+        remote_src: yes
+
+    - name: Install Calico network plugin
+      command: >
+        kubectl apply -f https://docs.projectcalico.org/v3.25/manifests/calico.yaml
+
+    - name: Retrieve join command for worker nodes
+      shell: kubeadm token create --print-join-command
+      register: join_command
+      delegate_to: localhost
+
+- name: Join Worker Nodes to Cluster
+  hosts: worker
+  become: yes
+
+  tasks:
+    - name: Join the Kubernetes cluster
+      command: "{{ hostvars['control-plane']['join_command'].stdout }}"
+
+- name: Deploy Nginx container on all nodes
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Create Nginx deployment
+      command: >
+        kubectl apply -f -
+      args:
+        stdin: |
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: nginx-deployment
+          spec:
+            replicas: 1
+            selector:
+              matchLabels:
+                app: nginx
+            template:
+              metadata:
+                labels:
+                  app: nginx
+              spec:
+                containers:
+                - name: nginx
+                  image: nginx:latest
+                  ports:
+                  - containerPort: 80
