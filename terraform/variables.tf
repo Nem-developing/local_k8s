@@ -31,7 +31,7 @@ variable "vm_count" {
 variable "template_name" {
   description = "The name of the Cloud-Init template to clone"
   type        = string
-  default     = "debian-13-cloudinit-template"
+  default     = "VM 100"
 }
 
 variable "vm_name_prefix" {
@@ -79,9 +79,9 @@ variable "vm_balloon" {
 }
 
 variable "vm_disk_size" {
-  description = "Disk size (e.g. 20G)"
-  type        = string
-  default     = "20G"
+  description = "Disk size in GB"
+  type        = number
+  default     = 20
 }
 
 variable "vm_swap_size" {

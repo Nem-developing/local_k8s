@@ -1,7 +1,9 @@
 output "vm_names" {
-    value = proxmox_vm_qemu.debian_vm[*].name
+    value = proxmox_virtual_environment_vm.debian_vm[*].name
 }
 
 output "vm_ips" {
-    value = proxmox_vm_qemu.debian_vm[*].default_ipv4_address
+    value = proxmox_virtual_environment_vm.debian_vm[*].ipv4_addresses
 }
+
+
