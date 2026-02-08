@@ -26,7 +26,6 @@ resource "proxmox_virtual_environment_vm" "debian_vm" {
   disk {
     datastore_id = var.vm_storage
     interface    = "scsi0"
-    size         = each.value.disk_size
     file_format  = "raw"
   }
 
@@ -36,6 +35,11 @@ resource "proxmox_virtual_environment_vm" "debian_vm" {
         address = each.value.ip
         gateway = each.value.gateway != null ? each.value.gateway : (var.vm_gateway != "" ? var.vm_gateway : null)
       }
+    }
+
+    dns {
+      servers = var.vm_dns != "" ? [var.vm_dns] : []
+      domain  = var.vm_dns_search != "" ? var.vm_dns_search : null
     }
 
     user_account {

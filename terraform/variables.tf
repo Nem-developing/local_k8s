@@ -58,7 +58,6 @@ variable "virtual_machines" {
     cores         = number
     sockets       = number
     memory        = number
-    disk_size     = number
     ip            = string
     gateway       = optional(string)
   }))
@@ -94,11 +93,11 @@ variable "vm_balloon" {
   default     = 0
 }
 
-variable "vm_disk_size" {
-  description = "Disk size in GB"
-  type        = number
-  default     = 20
-}
+# variable "vm_disk_size" {
+#   description = "Disk size in GB"
+#   type        = number
+#   default     = 20
+# }
 
 variable "vm_swap_size" {
     description = "Swap disk size (e.g. 4G). Leave empty to disable."
@@ -137,8 +136,21 @@ variable "vm_network_bridge" {
 #   default     = []
 # }
 
+
 variable "vm_gateway" {
   description = "Gateway IP (leave empty if using DHCP or if want default from network)"
+  type        = string
+  default     = ""
+}
+
+variable "vm_dns" {
+  description = "DNS Server IP (e.g. 1.1.1.1)"
+  type        = string
+  default     = "1.1.1.1"
+}
+
+variable "vm_dns_search" {
+  description = "DNS Search Domain"
   type        = string
   default     = ""
 }
