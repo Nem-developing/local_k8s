@@ -1,41 +1,35 @@
-# Proxmox API Connection
-pm_api_url          = "https://192.168.1.10:8006/api2/json"
-pm_api_token_id     = "root@pam!terraform"
+# Proxmox Authentication
+pm_api_url = "https://proxmox.example.com:8006/api2/json"
+pm_api_token_id = "terraform@pam!token"
 pm_api_token_secret = "your-api-token-secret"
+ssh_public_key = "ssh-rsa YOUR_PUBLIC_KEY..."
 
-# Node Settings
-target_node         = "pve"
+# VM Configuration
+virtual_machines = {
+  "my-vm-1" = {
+    name          = "example-vm-1"
+    target_node   = "pve"
+    vm_id         = 0
+    template_name = "ubuntu-template"
+    cores         = 2
+    sockets       = 1
+    memory        = 2048
+    ip            = "192.168.1.10/24"
+    gateway       = "192.168.1.1" 
+  },
+  "my-vm-2" = {
+    name          = "example-vm-2"
+    target_node   = "pve"
+    vm_id         = 102
+    template_name = "ubuntu-template"
+    cores         = 4
+    sockets       = 1
+    memory        = 4096
+    ip            = "dhcp"
+    gateway       = null
+  }
+}
 
-# VM General Configuration
-vm_count       = 3
-vm_name_prefix = "k8s-node"
-vm_id_start    = 1000  # Set to 0 to auto-generate NextID
-template_name  = "ubuntu-cloud-template"
-
-# VM Resource Sizing
-vm_cores     = 2
-vm_sockets   = 1
-vm_cpu_type  = "host"
-vm_memory    = 4096  # 4GB
-vm_balloon   = 1024  # Minimum memory if ballooning is enabled (set 0 to disable)
-
-# Storage
-vm_disk_size = 32    # 32GB
-vm_storage   = "local-lvm"
-vm_swap_size = "4G"  # Leave empty "" to disable swap
-
-# Networking
-vm_network_bridge = "vmbr0"
-# If using static IPs (must match vm_count length):
-# vm_ips = ["192.168.1.101/24", "192.168.1.102/24", "192.168.1.103/24"]
-# If using DHCP:
-# vm_ips = []
-# Gateway (optional if using DHCP)
-# vm_gateway = "192.168.1.1"
-
-# VM Access
-ssh_public_key = "ssh-rsa AAAAB3NzaC1yc2E..."
-
-# Other Settings
-vm_onboot = true
-vm_tablet = false
+# Optional Overrides
+# vm_dns        = "8.8.8.8"
+# vm_dns_search = "example.com"
