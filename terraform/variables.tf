@@ -74,3 +74,9 @@ variable "ssh_public_key" {
   description = "Public SSH key to inject into the VM"
   type        = string
 }
+
+variable "vm_user" {
+  description = "User to create/configure on the VM"
+  type        = string
+  default     = "nehemie"
+}

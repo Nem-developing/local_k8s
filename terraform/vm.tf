@@ -43,7 +43,8 @@ resource "proxmox_virtual_environment_vm" "debian_vm" {
     }
 
     user_account {
-      keys = [trimspace(var.ssh_public_key)]
+      username = var.vm_user
+      keys     = [trimspace(var.ssh_public_key)]
     }
   }
 
