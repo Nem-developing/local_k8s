@@ -1,9 +1,13 @@
 output "vm_names" {
-    value = proxmox_virtual_environment_vm.debian_vm[*].name
+  value = {
+    for k, v in proxmox_virtual_environment_vm.debian_vm : k => v.name
+  }
 }
 
 output "vm_ips" {
-    value = proxmox_virtual_environment_vm.debian_vm[*].ipv4_addresses
+  value = {
+    for k, v in proxmox_virtual_environment_vm.debian_vm : k => v.ipv4_addresses
+  }
 }
 
 
