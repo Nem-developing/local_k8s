@@ -1,10 +1,8 @@
 resource "proxmox_virtual_environment_vm" "debian_vm" {
 
-  timeouts {
-    create = "10800s"
-    update = "10800s"
-    delete = "10800s"
-  }
+  timeout_clone  = 21600 # 6 hours
+  timeout_create = 21600 # 6 hours
+
   for_each = var.virtual_machines
 
   name      = each.value.name

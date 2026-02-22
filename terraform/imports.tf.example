@@ -1,0 +1,33 @@
+# --- IMPORT DES NŒUDS ETCD ---
+
+import {
+  to = proxmox_virtual_environment_vm.debian_vm["etcd-1"]
+  id = "amy-pond-01/102"
+}
+
+import {
+  to = proxmox_virtual_environment_vm.debian_vm["etcd-2"]
+  id = "amy-pond-01/106"
+}
+
+import {
+  to = proxmox_virtual_environment_vm.debian_vm["etcd-3"]
+  id = "amy-pond-01/104"
+}
+
+# --- IMPORT DES NŒUDS WORKERS ---
+
+import {
+  to = proxmox_virtual_environment_vm.debian_vm["worker-1"]
+  id = "amy-pond-01/105"
+}
+
+import {
+  to = proxmox_virtual_environment_vm.debian_vm["worker-2"]
+  id = "amy-pond-01/103"
+}
+
+import {
+  to = proxmox_virtual_environment_vm.debian_vm["worker-3"]
+  id = "amy-pond-01/107"
+}
